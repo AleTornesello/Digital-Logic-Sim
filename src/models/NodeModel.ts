@@ -3,7 +3,7 @@ export class Node implements BaseNode {
   public name?: string;
   public inputs?: number;
   public outputs?: number;
-  public function?: (input: boolean[], outputs: boolean[]) => boolean;
+  public function?: (inputs: boolean[]) => boolean[];
 
   constructor(node?: BaseNode) {
     this.id =
@@ -34,5 +34,5 @@ export interface BaseNode {
   name?: string;
   inputs?: number;
   outputs?: number;
-  function?: (input: boolean[], outputs: boolean[]) => boolean;
+  function?: (inputs: boolean[]) => boolean[];
 }
