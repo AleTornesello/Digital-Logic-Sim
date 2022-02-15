@@ -1,16 +1,25 @@
 <template>
   <div id="node-editor">
     <div id="node-editor__inputs">
-      <div class="input" v-for="input in node.inputs" :key="input"></div>
+      <node-input-pin
+        v-for="input in node.inputs"
+        :key="input"
+      ></node-input-pin>
     </div>
     <div id="node-editor__editor"></div>
     <div id="node-editor__outputs">
-      <div class="output" v-for="output in node.outputs" :key="output"></div>
+      <node-output-pin
+        v-for="output in node.outputs"
+        :key="output"
+      ></node-output-pin>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { Node } from 'src/models/NodeModel';
+import NodeInputPin from './InputPin.vue';
+import NodeOutputPin from './OutputPin.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -20,6 +29,10 @@ export default defineComponent({
       type: Node,
       required: true,
     },
+  },
+  components: {
+    NodeInputPin,
+    NodeOutputPin,
   },
 });
 </script>
@@ -57,14 +70,5 @@ export default defineComponent({
     flex-direction: column;
     justify-content: space-evenly;
   }
-}
-
-.input,
-.output {
-  width: 24px;
-  height: 24px;
-  background-color: #202020;
-  border-radius: 50%;
-  border: 1px solid #101010;
 }
 </style>
