@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="output"></div>
+    <div class="output" :class="{ active: state }"></div>
     <div class="output__line"></div>
-    <div class="output__anchor"></div>
+    <div class="output__anchor" :class="{ active: state }"></div>
   </div>
 </template>
 
@@ -11,6 +11,12 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'NodeOutputPin',
+  props: {
+    state: {
+      type: Boolean,
+      required: true,
+    },
+  },
 });
 </script>
 
@@ -21,6 +27,10 @@ export default defineComponent({
   background-color: #202020;
   border-radius: 50%;
   border: 1px solid #101010;
+
+  &.active {
+    background-color: #cc0000;
+  }
 
   &__line {
     width: 16px;
@@ -40,6 +50,10 @@ export default defineComponent({
     border-radius: 50%;
     border: 1px solid #101010;
     top: -21px;
+
+    &.active {
+      background-color: #cc0000;
+    }
   }
 }
 </style>

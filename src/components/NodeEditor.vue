@@ -5,6 +5,7 @@
         v-for="(input, index) in node.inputs"
         :key="index"
         :state="input"
+        @toggle="toggleInput(index)"
       ></node-input-pin>
     </div>
     <div id="node-editor__editor"></div>
@@ -23,6 +24,7 @@ import NodeInputPin from './InputPin.vue';
 import NodeOutputPin from './OutputPin.vue';
 import { defineComponent, PropType } from 'vue';
 import { Node } from 'src/models/NodeModel';
+import { extend } from 'quasar';
 
 export default defineComponent({
   name: 'NodeEditor',
@@ -36,13 +38,31 @@ export default defineComponent({
       required: true,
     },
   },
+  data() {
+    let node: Node | undefined;
+
+    return {
+      node,
+    };
+  },
   components: {
     NodeInputPin,
     NodeOutputPin,
   },
-  computed: {
-    node(): Node | undefined {
-      return this.nodes.find((node) => node.id === this.nodeId);
+  watch: {
+    nodeId(newNodeId: string) {
+      const node = this.nodes.find((node) => node.id === newNodeId);
+
+      if (node) {
+        this.node = extend(true, {}, node);
+      }
+    },
+  },
+  methods: {
+    toggleInput(index: number): void {
+      if (this.node?.inputs) {
+        this.node.inputs[index] = !this.node.inputs[index];
+      }
     },
   },
 });
