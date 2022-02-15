@@ -12,7 +12,7 @@
           :name="openNodeId"
         >
           <span>
-            {{ getNodeById(openNodeId).name }}
+            {{ getNodeById(openNodeId)?.name || '' }}
             <q-btn flat padding="none">
               <q-icon name="close" @click="removeNode(openNodeId)"></q-icon>
             </q-btn>
@@ -31,7 +31,7 @@
       class="bg-primary text-white"
     >
       <q-scroll-area class="fit">
-        <div class="q-pa-sm">
+        <div class="q-pa-sm" id="nodes_preview_container">
           <div
             v-for="node in nodes"
             :key="node.id"
@@ -59,9 +59,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { Node } from 'src/models/NodeModel';
 import { uid } from 'quasar';
+import { useNodes } from 'src/store/nodes';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -69,14 +70,13 @@ export default defineComponent({
     return {
       openedTab: '0',
       openNodes: ['0'],
-      nodes: Array.of<Node>(
-        new Node({
-          id: '0',
-          name: 'New Node',
-        })
-      ),
       nodesDrawerModel: true,
     };
+  },
+  setup() {
+    const nodesStore = useNodes();
+    const nodes = computed(() => nodesStore.getters.nodes);
+    return { nodes };
   },
   methods: {
     addNewNode(): void {
@@ -102,6 +102,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+#nodes_preview_container {
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
 .node_preview {
   border: 1px solid #cccccc;
   border-radius: 4px;
