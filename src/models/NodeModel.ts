@@ -1,4 +1,5 @@
 import { uid } from 'quasar';
+import { ColorUtils } from 'src/utils/ColorUtils';
 export class Node implements BaseNode {
   public id?: string;
   public name?: string;
@@ -31,7 +32,7 @@ export class Node implements BaseNode {
     this.color =
       node && Object.prototype.hasOwnProperty.call(node, 'color')
         ? node.color
-        : '#ffcc00';
+        : ColorUtils.getRandomColor();
   }
 }
 
