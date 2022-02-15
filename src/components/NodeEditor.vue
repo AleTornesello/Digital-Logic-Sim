@@ -2,15 +2,17 @@
   <div id="node-editor" v-if="nodeId && node">
     <div id="node-editor__inputs">
       <node-input-pin
-        v-for="input in node.inputs"
-        :key="input"
+        v-for="(input, index) in node.inputs"
+        :key="index"
+        :state="input"
       ></node-input-pin>
     </div>
     <div id="node-editor__editor"></div>
     <div id="node-editor__outputs">
       <node-output-pin
-        v-for="output in node.outputs"
-        :key="output"
+        v-for="(output, index) in node.outputs"
+        :key="index"
+        :state="output"
       ></node-output-pin>
     </div>
   </div>

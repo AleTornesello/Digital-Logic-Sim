@@ -3,8 +3,8 @@ import { ColorUtils } from 'src/utils/ColorUtils';
 export class Node implements BaseNode {
   public id?: string;
   public name?: string;
-  public inputs?: number;
-  public outputs?: number;
+  public inputs?: boolean[];
+  public outputs?: boolean[];
   public function?: (inputs: boolean[]) => boolean[];
   public color?: string;
 
@@ -20,11 +20,11 @@ export class Node implements BaseNode {
     this.inputs =
       node && Object.prototype.hasOwnProperty.call(node, 'inputs')
         ? node.inputs
-        : 1;
+        : [false];
     this.outputs =
       node && Object.prototype.hasOwnProperty.call(node, 'outputs')
         ? node.outputs
-        : 1;
+        : [false];
     this.function =
       node && Object.prototype.hasOwnProperty.call(node, 'function')
         ? node.function
@@ -39,8 +39,8 @@ export class Node implements BaseNode {
 export interface BaseNode {
   id?: string;
   name?: string;
-  inputs?: number;
-  outputs?: number;
+  inputs?: boolean[];
+  outputs?: boolean[];
   function?: (inputs: boolean[]) => boolean[];
   color?: string;
 }
