@@ -7,7 +7,7 @@
 
       <q-tabs v-model="openedTab" dense class="bg-dark text-white">
         <q-tab
-          v-for="openNodeId in openNodes"
+          v-for="openNodeId in openedNodesIds"
           :key="openNodeId"
           :name="openNodeId"
         >
@@ -45,14 +45,14 @@
     </q-drawer>
 
     <q-page-container>
-      <q-btn
+      <!-- <q-btn
         unelevated
         color="primary"
         @click="toggleNodesDrawer()"
         id="nodes-drawer-toggle"
       >
         <q-icon name="menu"></q-icon>
-      </q-btn>
+      </q-btn> -->
       <router-view />
     </q-page-container>
   </q-layout>
@@ -69,8 +69,8 @@ export default defineComponent({
   data() {
     return {
       openedTab: '0',
-      openNodes: ['0'],
       nodesDrawerModel: true,
+      openedNodesIds: Array.of<string>(),
     };
   },
   setup() {
@@ -81,14 +81,16 @@ export default defineComponent({
   methods: {
     addNewNode(): void {
       const id: string = uid();
-      this.nodes.push(new Node({ id, name: 'New Node' }));
-      this.openNodes.push(id);
+      // this.nodes.push(new Node({ id, name: 'New Node' }));
+      this.openedNodesIds.push(id);
     },
     removeNode(id: string): void {
-      const nodeIndex = this.openNodes.findIndex((nodeId) => nodeId === id);
+      const nodeIndex = this.openedNodesIds.findIndex(
+        (nodeId) => nodeId === id
+      );
 
       if (nodeIndex !== -1) {
-        this.openNodes.splice(nodeIndex, 1);
+        this.openedNodesIds.splice(nodeIndex, 1);
       }
     },
     getNodeById(id: string): Node | undefined {
