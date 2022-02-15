@@ -24,7 +24,7 @@ export default defineComponent({
 
   &__line {
     width: 16px;
-    left: 23px;
+    left: 24px;
     position: relative;
     height: 2px;
     background-color: #101010;
@@ -35,7 +35,7 @@ export default defineComponent({
     width: 16px;
     height: 16px;
     position: relative;
-    left: 28px;
+    left: 40px;
     background-color: #202020;
     border-radius: 50%;
     border: 1px solid #101010;
