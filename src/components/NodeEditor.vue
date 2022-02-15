@@ -1,5 +1,5 @@
 <template>
-  <div id="node-editor">
+  <div id="node-editor" v-if="nodeId && node">
     <div id="node-editor__inputs">
       <node-input-pin
         v-for="input in node.inputs"
@@ -17,22 +17,31 @@
 </template>
 
 <script lang="ts">
-import { Node } from 'src/models/NodeModel';
 import NodeInputPin from './InputPin.vue';
 import NodeOutputPin from './OutputPin.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+import { Node } from 'src/models/NodeModel';
 
 export default defineComponent({
   name: 'NodeEditor',
   props: {
-    node: {
-      type: Node,
+    nodes: {
+      type: Array as PropType<Array<Node>>,
+      required: true,
+    },
+    nodeId: {
+      type: String,
       required: true,
     },
   },
   components: {
     NodeInputPin,
     NodeOutputPin,
+  },
+  computed: {
+    node(): Node | undefined {
+      return this.nodes.find((node) => node.id === this.nodeId);
+    },
   },
 });
 </script>

@@ -19,4 +19,5 @@ export default class NodesState {
       },
     }),
   ];
+  public visualizedNodeId: string | null = null;
 }

@@ -1,28 +1,31 @@
 <template>
   <q-page class="row items-center justify-center">
     <div id="editor-container">
-      <node-editor :node="selectedNode"></node-editor>
+      <node-editor :nodes="nodes" :node-id="visualizedNodeId"></node-editor>
     </div>
   </q-page>
 </template>
 
 <script lang="ts">
 import NodeEditor from 'src/components/NodeEditor.vue';
-import { defineComponent } from 'vue';
-import { Node } from 'src/models/NodeModel';
+import { computed, defineComponent } from 'vue';
+import { useNodes } from 'src/store/nodes';
 
 export default defineComponent({
   name: 'PageIndex',
   components: {
     NodeEditor,
   },
-  data() {
+  setup() {
+    const nodesStore = useNodes();
+    const nodes = computed(() => nodesStore.getters.nodes);
+    const visualizedNodeId = computed(
+      () => nodesStore.getters.visualizedNodeId
+    );
+
     return {
-      selectedNode: new Node({
-        id: '0',
-        name: 'New Node',
-        inputs: 2,
-      }),
+      visualizedNodeId,
+      nodes,
     };
   },
 });

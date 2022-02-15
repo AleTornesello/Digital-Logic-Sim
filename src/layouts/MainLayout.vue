@@ -5,7 +5,12 @@
         <q-toolbar-title>Digital Logic Sim</q-toolbar-title>
       </q-toolbar>
 
-      <q-tabs v-model="openedTab" dense class="bg-dark text-white">
+      <q-tabs
+        v-model="openedTab"
+        @update:modelValue="setVisibleNode()"
+        dense
+        class="bg-dark text-white"
+      >
         <q-tab
           v-for="openNodeId in openedNodesIds"
           :key="openNodeId"
@@ -76,12 +81,12 @@ export default defineComponent({
   setup() {
     const nodesStore = useNodes();
     const nodes = computed(() => nodesStore.getters.nodes);
-    return { nodes };
+    return { nodes, nodesStore };
   },
   methods: {
     addNewNode(): void {
       const id: string = uid();
-      // this.nodes.push(new Node({ id, name: 'New Node' }));
+      this.nodesStore.commit('addNode', new Node({ id, name: 'New Node' }));
       this.openedNodesIds.push(id);
     },
     removeNode(id: string): void {
@@ -98,6 +103,10 @@ export default defineComponent({
     },
     toggleNodesDrawer(): void {
       this.nodesDrawerModel = !this.nodesDrawerModel;
+    },
+    setVisibleNode(): void {
+      const nodeId = this.openedTab;
+      this.nodesStore.commit('setVisualizedNode', nodeId);
     },
   },
 });

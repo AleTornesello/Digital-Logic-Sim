@@ -6,4 +6,8 @@ export default class NodeGetters extends Getters<NodesState> {
   get nodes(): Node[] {
     return this.state.nodes;
   }
+
+  get visualizedNodeId(): string | null {
+    return this.state.visualizedNodeId;
+  }
 }
