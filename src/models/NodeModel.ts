@@ -1,10 +1,11 @@
 import { uid } from 'quasar';
 import { ColorUtils } from 'src/utils/ColorUtils';
+import { PinModel } from './PinModel';
 export class Node implements BaseNode {
   public id?: string;
   public name?: string;
-  public inputs?: boolean[];
-  public outputs?: boolean[];
+  public inputs?: PinModel[];
+  public outputs?: PinModel[];
   public function?: (inputs: boolean[]) => boolean[];
   public color?: string;
 
@@ -20,11 +21,11 @@ export class Node implements BaseNode {
     this.inputs =
       node && Object.prototype.hasOwnProperty.call(node, 'inputs')
         ? node.inputs
-        : [false];
+        : [new PinModel()];
     this.outputs =
       node && Object.prototype.hasOwnProperty.call(node, 'outputs')
         ? node.outputs
-        : [false];
+        : [new PinModel()];
     this.function =
       node && Object.prototype.hasOwnProperty.call(node, 'function')
         ? node.function
@@ -39,8 +40,8 @@ export class Node implements BaseNode {
 export interface BaseNode {
   id?: string;
   name?: string;
-  inputs?: boolean[];
-  outputs?: boolean[];
+  inputs?: PinModel[];
+  outputs?: PinModel[];
   function?: (inputs: boolean[]) => boolean[];
   color?: string;
 }

@@ -4,7 +4,7 @@
       <node-input-pin
         v-for="(input, index) in node.inputs"
         :key="index"
-        :state="input"
+        :state="input.state || false"
         @toggle="toggleInput(index)"
       ></node-input-pin>
     </div>
@@ -13,7 +13,7 @@
       <node-output-pin
         v-for="(output, index) in node.outputs"
         :key="index"
-        :state="output"
+        :state="output.state || false"
       ></node-output-pin>
     </div>
   </div>
@@ -61,7 +61,7 @@ export default defineComponent({
   methods: {
     toggleInput(index: number): void {
       if (this.node?.inputs) {
-        this.node.inputs[index] = !this.node.inputs[index];
+        this.node.inputs[index].state = !this.node.inputs[index].state;
       }
     },
   },
