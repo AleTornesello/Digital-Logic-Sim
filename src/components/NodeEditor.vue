@@ -22,6 +22,13 @@
         :key="index"
         :state="output.state || false"
       ></node-output-pin>
+      <q-menu touch-position>
+        <q-list dense>
+          <q-item clickable v-close-popup @click="newOutputPin()">
+            <q-item-section>New output pin</q-item-section>
+          </q-item>
+        </q-list>
+      </q-menu>
     </div>
   </div>
 </template>
@@ -75,6 +82,11 @@ export default defineComponent({
     newInputPin(): void {
       if (this.node?.inputs) {
         this.node.inputs.push(new PinModel());
+      }
+    },
+    newOutputPin(): void {
+      if (this.node?.outputs) {
+        this.node.outputs.push(new PinModel());
       }
     },
   },
