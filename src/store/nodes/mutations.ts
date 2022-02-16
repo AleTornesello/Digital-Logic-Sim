@@ -7,11 +7,11 @@ export default class NodesMutations extends Mutations<NodesState> {
     this.state.nodes.push(node);
   }
 
-  removeNode(node: Node) {
-    this.state.nodes = this.state.nodes.filter((n) => n.id !== node.id);
+  removeNode(nodeId: string) {
+    this.state.nodes = this.state.nodes.filter((n) => n.id !== nodeId);
   }
 
-  setVisualizedNode(nodeId: string) {
+  setVisualizedNode(nodeId: string | null) {
     this.state.visualizedNodeId = nodeId;
   }
 }

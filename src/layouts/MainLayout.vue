@@ -7,7 +7,7 @@
 
       <q-tabs
         v-model="openedTab"
-        @update:modelValue="setVisibleNode()"
+        @update:modelValue="setVisibleNode(openedTab)"
         dense
         class="bg-dark text-white"
       >
@@ -69,13 +69,19 @@ import { Node } from 'src/models/NodeModel';
 import { uid } from 'quasar';
 import { useNodes } from 'src/store/nodes';
 
+declare interface BaseComponentData {
+  openedTab: string | null;
+  nodesDrawerModel: boolean;
+  openedNodesIds: string[];
+}
+
 export default defineComponent({
   name: 'MainLayout',
-  data() {
+  data(): BaseComponentData {
     return {
-      openedTab: '0',
+      openedTab: null,
       nodesDrawerModel: true,
-      openedNodesIds: Array.of<string>(),
+      openedNodesIds: [],
     };
   },
   setup() {
@@ -88,6 +94,11 @@ export default defineComponent({
       const id: string = uid();
       this.nodesStore.commit('addNode', new Node({ id, name: 'New Node' }));
       this.openedNodesIds.push(id);
+
+      // If there are only one node, set it as visible node
+      if (this.openedNodesIds.length === 1) {
+        this.setVisibleNode(id);
+      }
     },
     removeNode(id: string): void {
       const nodeIndex = this.openedNodesIds.findIndex(
@@ -97,6 +108,14 @@ export default defineComponent({
       if (nodeIndex !== -1) {
         this.openedNodesIds.splice(nodeIndex, 1);
       }
+
+      // If there are nodes, set first as visible node,
+      // otherwise delete visible node id
+      if (this.openedNodesIds.length > 0) {
+        this.setVisibleNode(this.openedNodesIds[0]);
+      } else {
+        this.setVisibleNode(null);
+      }
     },
     getNodeById(id: string): Node | undefined {
       return this.nodes.find((node) => node.id === id);
@@ -104,8 +123,7 @@ export default defineComponent({
     toggleNodesDrawer(): void {
       this.nodesDrawerModel = !this.nodesDrawerModel;
     },
-    setVisibleNode(): void {
-      const nodeId = this.openedTab;
+    setVisibleNode(nodeId: string | null): void {
       this.nodesStore.commit('setVisualizedNode', nodeId);
     },
   },
