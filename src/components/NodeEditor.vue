@@ -43,6 +43,10 @@ import { PinModel } from 'src/models/PinModel';
 
 export default defineComponent({
   name: 'NodeEditor',
+  components: {
+    NodeInputPin,
+    NodeOutputPin,
+  },
   props: {
     nodes: {
       type: Array as PropType<Array<Node>>,
@@ -59,10 +63,6 @@ export default defineComponent({
     return {
       node,
     };
-  },
-  components: {
-    NodeInputPin,
-    NodeOutputPin,
   },
   watch: {
     nodeId(newNodeId: string) {
@@ -87,6 +87,14 @@ export default defineComponent({
     newOutputPin(): void {
       if (this.node?.outputs) {
         this.node.outputs.push(new PinModel());
+      }
+    },
+    addSubNode(nodeId: string): void {
+      if (this.node?.subNodes) {
+        this.node.subNodes.push({
+          id: nodeId,
+          position: { x: 0, y: 0 },
+        });
       }
     },
   },

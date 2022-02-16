@@ -42,6 +42,7 @@
             :key="node.id"
             class="node_preview"
             :style="{ 'background-color': node.color }"
+            @click="addSubNode(node.id)"
           >
             {{ node.name }}
           </div>
@@ -125,6 +126,9 @@ export default defineComponent({
     },
     setVisibleNode(nodeId: string | null): void {
       this.nodesStore.commit('setVisualizedNode', nodeId);
+    },
+    addSubNode(nodeId: string): void {
+      this.nodesStore.commit('setNodeToAdd', nodeId);
     },
   },
 });

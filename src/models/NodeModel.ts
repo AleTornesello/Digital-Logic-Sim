@@ -8,6 +8,7 @@ export class Node implements BaseNode {
   public outputs?: PinModel[];
   public function?: (inputs: boolean[]) => boolean[];
   public color?: string;
+  public subNodes?: { id: string; position: { x: number; y: number } }[];
 
   constructor(node?: BaseNode) {
     this.id =
@@ -34,6 +35,10 @@ export class Node implements BaseNode {
       node && Object.prototype.hasOwnProperty.call(node, 'color')
         ? node.color
         : ColorUtils.getRandomColor();
+    this.subNodes =
+      node && Object.prototype.hasOwnProperty.call(node, 'subNodes')
+        ? node.subNodes
+        : [];
   }
 }
 
@@ -44,4 +49,5 @@ export interface BaseNode {
   outputs?: PinModel[];
   function?: (inputs: boolean[]) => boolean[];
   color?: string;
+  subNodes?: { id: string; position: { x: number; y: number } }[];
 }
