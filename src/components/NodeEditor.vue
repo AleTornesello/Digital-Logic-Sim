@@ -7,6 +7,13 @@
         :state="input.state || false"
         @toggle="toggleInput(index)"
       ></node-input-pin>
+      <q-menu touch-position>
+        <q-list dense style="min-width: 100px">
+          <q-item clickable v-close-popup @click="newInputPin()">
+            <q-item-section>New input pin</q-item-section>
+          </q-item>
+        </q-list>
+      </q-menu>
     </div>
     <div id="node-editor__editor"></div>
     <div id="node-editor__outputs">
@@ -25,6 +32,7 @@ import NodeOutputPin from './OutputPin.vue';
 import { defineComponent, PropType } from 'vue';
 import { Node } from 'src/models/NodeModel';
 import { extend } from 'quasar';
+import { PinModel } from 'src/models/PinModel';
 
 export default defineComponent({
   name: 'NodeEditor',
@@ -62,6 +70,11 @@ export default defineComponent({
     toggleInput(index: number): void {
       if (this.node?.inputs) {
         this.node.inputs[index].state = !this.node.inputs[index].state;
+      }
+    },
+    newInputPin(): void {
+      if (this.node?.inputs) {
+        this.node.inputs.push(new PinModel());
       }
     },
   },
