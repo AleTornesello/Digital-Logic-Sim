@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts">
-import NodeInputPin from './InputPin.vue';
-import NodeOutputPin from './OutputPin.vue';
+import NodeInputPin from '../../pins/InputPin.vue';
+import NodeOutputPin from '../../pins/OutputPin.vue';
 import { defineComponent, PropType } from 'vue';
 import { Node } from 'src/models/NodeModel';
 import { extend } from 'quasar';

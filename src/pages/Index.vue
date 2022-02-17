@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import NodeEditor from 'src/components/NodeEditor.vue';
+import NodeEditor from 'src/components/nodes/editor/NodeEditor.vue';
 import { computed, defineComponent, ref } from 'vue';
 import { useNodes } from 'src/store/nodes';
 import { emitter } from 'src/boot/global-event-bus';

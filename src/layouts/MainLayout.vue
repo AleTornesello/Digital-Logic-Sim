@@ -37,15 +37,14 @@
     >
       <q-scroll-area class="fit">
         <div class="q-pa-sm" id="nodes_preview_container">
-          <div
+          <node-preview
             v-for="node in nodes"
             :key="node.id"
-            class="node_preview"
-            :style="{ 'background-color': node.color }"
-            @click="addSubNode(node.id)"
-          >
-            {{ node.name }}
-          </div>
+            :node="node"
+            :disabled="openedTab === node.id"
+            @add="addSubNode(node.id)"
+            @edit="setVisibleNode(node.id)"
+          ></node-preview>
         </div>
       </q-scroll-area>
     </q-drawer>
@@ -69,6 +68,7 @@ import { computed, defineComponent } from 'vue';
 import { Node } from 'src/models/NodeModel';
 import { uid } from 'quasar';
 import { useNodes } from 'src/store/nodes';
+import NodePreview from 'src/components/nodes/NodePreview.vue';
 
 declare interface BaseComponentData {
   openedTab: string | null;
@@ -95,7 +95,6 @@ export default defineComponent({
       const id: string = uid();
       this.nodesStore.commit('addNode', new Node({ id, name: 'New Node' }));
       this.openedNodesIds.push(id);
-
       // If there are only one node, set it as visible node
       if (this.openedNodesIds.length === 1) {
         this.setVisibleNode(id);
@@ -105,11 +104,9 @@ export default defineComponent({
       const nodeIndex = this.openedNodesIds.findIndex(
         (nodeId) => nodeId === id
       );
-
       if (nodeIndex !== -1) {
         this.openedNodesIds.splice(nodeIndex, 1);
       }
-
       // If there are nodes, set first as visible node,
       // otherwise delete visible node id
       if (this.openedNodesIds.length > 0) {
@@ -126,11 +123,16 @@ export default defineComponent({
     },
     setVisibleNode(nodeId: string | null): void {
       this.nodesStore.commit('setVisualizedNode', nodeId);
+      this.openedTab = nodeId;
+      if (nodeId && !this.openedNodesIds.find((id) => id === nodeId)) {
+        this.openedNodesIds.push(nodeId);
+      }
     },
     addSubNode(nodeId: string): void {
       this.nodesStore.commit('setNodeToAdd', nodeId);
     },
   },
+  components: { NodePreview },
 });
 </script>
 
@@ -139,13 +141,6 @@ export default defineComponent({
   gap: 8px;
   display: flex;
   flex-direction: column;
-}
-
-.node_preview {
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  padding: 12px 8px;
-  color: #000000;
 }
 
 #nodes-drawer-toggle {
