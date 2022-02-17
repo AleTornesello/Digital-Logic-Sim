@@ -3,10 +3,10 @@ import { ColorUtils } from 'src/utils/ColorUtils';
 import { PinModel } from './PinModel';
 export class Node implements BaseNode {
   public id?: string;
-  public name?: string;
-  public inputs?: PinModel[];
-  public outputs?: PinModel[];
-  public function?: (inputs: boolean[]) => boolean[];
+  public name: string;
+  public inputs: PinModel[] | undefined;
+  public outputs: PinModel[] | undefined;
+  public function: ((inputs: boolean[]) => boolean[]) | undefined;
   public color?: string;
   public subNodes?: { id: string; position: { x: number; y: number } }[];
 
@@ -44,7 +44,7 @@ export class Node implements BaseNode {
 
 export interface BaseNode {
   id?: string;
-  name?: string;
+  name: string;
   inputs?: PinModel[];
   outputs?: PinModel[];
   function?: (inputs: boolean[]) => boolean[];
