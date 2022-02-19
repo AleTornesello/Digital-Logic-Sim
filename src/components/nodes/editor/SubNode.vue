@@ -50,8 +50,8 @@ export default defineComponent({
 
 <style lang="scss">
 .sub-node {
-  width: 20%;
-  min-height: 6.5em;
+  width: 150px;
+  min-height: 5.5em;
   background-color: #29e;
   color: #000000;
   border-radius: 0.75em;
