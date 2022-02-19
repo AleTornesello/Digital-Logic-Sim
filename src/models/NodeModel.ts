@@ -1,6 +1,18 @@
 import { uid } from 'quasar';
 import { ColorUtils } from 'src/utils/ColorUtils';
 import { PinModel } from './PinModel';
+import SubNodeModel from './SubNodeModel';
+
+export interface BaseNode {
+  id?: string;
+  name: string;
+  inputs?: PinModel[];
+  outputs?: PinModel[];
+  function?: (inputs: boolean[]) => boolean[];
+  color?: string;
+  subNodes?: SubNodeModel[];
+}
+
 export class Node implements BaseNode {
   public id?: string;
   public name: string;
@@ -8,7 +20,7 @@ export class Node implements BaseNode {
   public outputs: PinModel[] | undefined;
   public function: ((inputs: boolean[]) => boolean[]) | undefined;
   public color?: string;
-  public subNodes?: { id: string; position: { x: number; y: number } }[];
+  public subNodes?: SubNodeModel[];
 
   constructor(node?: BaseNode) {
     this.id =
@@ -40,14 +52,4 @@ export class Node implements BaseNode {
         ? node.subNodes
         : [];
   }
-}
-
-export interface BaseNode {
-  id?: string;
-  name: string;
-  inputs?: PinModel[];
-  outputs?: PinModel[];
-  function?: (inputs: boolean[]) => boolean[];
-  color?: string;
-  subNodes?: { id: string; position: { x: number; y: number } }[];
 }
