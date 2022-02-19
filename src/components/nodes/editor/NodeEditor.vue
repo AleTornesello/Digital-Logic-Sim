@@ -7,13 +7,13 @@
         :state="input.state || false"
         @toggle="toggleInput(index)"
       ></node-input-pin>
-      <q-menu touch-position>
+      <!-- <q-menu touch-position>
         <q-list dense style="min-width: 100px">
           <q-item clickable v-close-popup @click="newInputPin()">
             <q-item-section>New input pin</q-item-section>
           </q-item>
         </q-list>
-      </q-menu>
+      </q-menu> -->
     </div>
     <div id="node-editor__editor">
       <sub-node
@@ -30,13 +30,13 @@
         :key="index"
         :state="output.state || false"
       ></node-output-pin>
-      <q-menu touch-position>
+      <!-- <q-menu touch-position>
         <q-list dense>
           <q-item clickable v-close-popup @click="newOutputPin()">
             <q-item-section>New output pin</q-item-section>
           </q-item>
         </q-list>
-      </q-menu>
+      </q-menu> -->
     </div>
   </div>
 </template>
