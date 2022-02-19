@@ -15,7 +15,15 @@
         </q-list>
       </q-menu>
     </div>
-    <div id="node-editor__editor"></div>
+    <div id="node-editor__editor">
+      <sub-node
+        v-for="subNode in subNodes"
+        :key="subNode.node.id"
+        :node="subNode.node"
+        :position="subNode.position"
+        class="node-editor__editor__sub-node"
+      ></sub-node>
+    </div>
     <div id="node-editor__outputs">
       <node-output-pin
         v-for="(output, index) in node.outputs"
@@ -40,12 +48,18 @@ import { defineComponent, PropType } from 'vue';
 import { Node } from 'src/models/NodeModel';
 import { extend } from 'quasar';
 import { PinModel } from 'src/models/PinModel';
+import SubNode from './SubNode.vue';
+import interact from 'interactjs';
+import { InteractEvent } from '@interactjs/types';
+import PositionModel from 'src/models/core/PositionModel';
+import SubNodeModel from 'src/models/SubNodeModel';
 
 export default defineComponent({
   name: 'NodeEditor',
   components: {
     NodeInputPin,
     NodeOutputPin,
+    SubNode,
   },
   props: {
     nodes: {
@@ -73,6 +87,42 @@ export default defineComponent({
       }
     },
   },
+  computed: {
+    subNodes(): { node: Node; position: PositionModel }[] {
+      if (this.node && this.node.subNodes) {
+        return this.node.subNodes.map((subNode) => {
+          return {
+            node: this.getNodeFromId(subNode.id),
+            position: subNode.position,
+          };
+        });
+      } else {
+        return [];
+      }
+    },
+  },
+  mounted() {
+    interact('.node-editor__editor__sub-node').draggable({
+      // enable inertial throwing
+      inertia: false,
+      // keep the element within the area of it's parent
+      modifiers: [
+        interact.modifiers.restrictRect({
+          restriction: 'parent',
+          endOnly: false,
+        }),
+      ],
+      // enable autoScroll
+      autoScroll: false,
+
+      listeners: {
+        // call this function on every dragmove event
+        move: (event: InteractEvent) => {
+          this.dragMoveListener(event);
+        },
+      },
+    });
+  },
   methods: {
     toggleInput(index: number): void {
       if (this.node?.inputs) {
@@ -91,11 +141,33 @@ export default defineComponent({
     },
     addSubNode(nodeId: string): void {
       if (this.node?.subNodes) {
-        this.node.subNodes.push({
-          id: nodeId,
-          position: { x: 0, y: 0 },
-        });
+        this.node.subNodes.push(
+          new SubNodeModel(nodeId, new PositionModel(0, 0))
+        );
       }
+    },
+    getNodeFromId(nodeId: string): Node {
+      const node = this.nodes.find((node) => node.id === nodeId);
+      if (node) {
+        return node;
+      } else {
+        throw new Error(`Node with id ${nodeId} not found`);
+      }
+    },
+    dragMoveListener(event: InteractEvent) {
+      let target = event.target;
+      // // keep the dragged position in the data-x/data-y attributes
+      const x: number =
+        (parseFloat(target.getAttribute('data-x') || '0') || 0) + event.dx;
+      const y: number =
+        (parseFloat(target.getAttribute('data-y') || '0') || 0) + event.dy;
+
+      // // translate the element
+      target.style.transform = `translate(${x}px, ${y}px)`;
+
+      // // update the posiion attributes
+      target.setAttribute('data-x', x.toString(10));
+      target.setAttribute('data-y', y.toString(10));
     },
   },
 });
@@ -124,6 +196,7 @@ export default defineComponent({
 
   &__editor {
     flex-grow: 1;
+    margin: 0 24px;
   }
 
   &__outputs {
