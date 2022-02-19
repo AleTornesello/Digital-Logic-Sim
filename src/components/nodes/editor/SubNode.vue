@@ -20,9 +20,9 @@
     <div class="sub-node__outputs">
       <div
         class="sub-node__outputs__anchor"
-        v-for="input in node.inputs"
-        :key="input.id"
-        :class="{ active: input.state }"
+        v-for="output in node.outputs"
+        :key="output.id"
+        :class="{ active: output.state }"
       ></div>
     </div>
   </div>
@@ -58,7 +58,6 @@ export default defineComponent({
   touch-action: none;
   user-select: none;
   display: flex;
-  align-items: center;
 
   &__inputs,
   &__outputs {
@@ -87,6 +86,8 @@ export default defineComponent({
 
   &__name {
     flex-grow: 1;
+    display: flex;
+    align-items: center;
   }
 }
 </style>
