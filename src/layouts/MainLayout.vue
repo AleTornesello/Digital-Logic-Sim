@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { Chip } from 'src/models/Chip';
+import { Chip } from 'src/models/chips/Chip';
 import { uid } from 'quasar';
 import { useChips } from 'src/store/nodes';
 import ChipPreviewComponent from 'src/components/nodes/ChipPreviewComponent.vue';

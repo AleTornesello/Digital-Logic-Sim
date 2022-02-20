@@ -11,7 +11,7 @@
         class="sub-node__inputs__anchor"
         v-for="input in node.inputs"
         :key="input.id"
-        :class="{ active: input.state }"
+        :class="{ active: input.connectedLink?.state || false }"
       ></div>
     </div>
     <div class="sub-node__name">
@@ -22,15 +22,15 @@
         class="sub-node__outputs__anchor"
         v-for="output in node.outputs"
         :key="output.id"
-        :class="{ active: output.state }"
+        :class="{ active: output.connectedLink?.state || false }"
       ></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Position from 'src/models/core/Position';
-import { Chip } from 'src/models/Chip';
+import { Chip } from 'src/models/chips/Chip';
+import { Position } from 'src/models/core/Position';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -58,6 +58,7 @@ export default defineComponent({
   touch-action: none;
   user-select: none;
   display: flex;
+  border: 1px solid #333333;
 
   &__inputs,
   &__outputs {

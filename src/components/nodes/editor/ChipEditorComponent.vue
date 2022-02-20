@@ -45,14 +45,14 @@
 import ChipInputPin from '../../pins/InputPinComponent.vue';
 import ChipOutputPin from '../../pins/OutputPinComponent.vue';
 import { defineComponent, PropType } from 'vue';
-import { Chip } from 'src/models/Chip';
+import { Chip } from 'src/models/chips/Chip';
 import { extend } from 'quasar';
 import { Pin } from 'src/models/Pin';
 import SubChipComponent from './SubChipComponent.vue';
 import interact from 'interactjs';
 import { InteractEvent } from '@interactjs/types';
-import Position from 'src/models/core/Position';
 import SubChip from 'src/models/SubChip';
+import { Position } from 'src/models/core/Position';
 
 export default defineComponent({
   name: 'ChipEditor',

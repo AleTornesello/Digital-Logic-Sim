@@ -6,7 +6,7 @@
     @click="onPreviewClick()"
   >
     <div class="node-preview__name">{{ node.name }}</div>
-    <div v-if="!node.function">
+    <div v-if="isCustomChip">
       <q-btn flat @click.stop="onEditClick()">
         <q-icon name="edit"></q-icon>
       </q-btn>
@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { Chip } from 'src/models/Chip';
+import { Chip } from 'src/models/chips/Chip';
+import { CustomChip } from 'src/models/chips/CustomChip';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -28,6 +29,11 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false,
+    },
+  },
+  computed: {
+    isCustomChip() {
+      return this.node instanceof CustomChip;
     },
   },
   methods: {

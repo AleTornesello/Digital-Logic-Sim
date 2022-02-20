@@ -1,4 +1,4 @@
-import { Chip } from 'src/models/Chip';
+import { Chip } from 'src/models/chips/Chip';
 import { Mutations } from 'vuex-smart-module';
 import ChipsState from './state';
 import { emitter } from 'src/boot/global-event-bus';
