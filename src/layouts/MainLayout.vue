@@ -7,24 +7,24 @@
 
       <q-tabs
         v-model="openedTab"
-        @update:modelValue="setVisibleNode(openedTab)"
+        @update:modelValue="setVisibleChip(openedTab)"
         dense
         class="bg-dark text-white"
       >
         <q-tab
-          v-for="openNodeId in openedNodesIds"
-          :key="openNodeId"
-          :name="openNodeId"
+          v-for="openChipId in openedChipsIds"
+          :key="openChipId"
+          :name="openChipId"
         >
           <span>
-            {{ getNodeById(openNodeId)?.name || '' }}
+            {{ getChipById(openChipId)?.name || '' }}
             <q-btn flat padding="none">
-              <q-icon name="close" @click="removeNode(openNodeId)"></q-icon>
+              <q-icon name="close" @click="removeChip(openChipId)"></q-icon>
             </q-btn>
           </span>
         </q-tab>
         <q-btn flat>
-          <q-icon name="add" @click="addNewNode()"></q-icon>
+          <q-icon name="add" @click="addNewChip()"></q-icon>
         </q-btn>
       </q-tabs>
     </q-header>
@@ -37,14 +37,14 @@
     >
       <q-scroll-area class="fit">
         <div class="q-pa-sm" id="nodes_preview_container">
-          <node-preview
+          <chip-preview-component
             v-for="node in nodes"
             :key="node.id"
             :node="node"
             :disabled="openedTab === node.id"
-            @add="addSubNode(node.id)"
-            @edit="setVisibleNode(node.id)"
-          ></node-preview>
+            @add="addSubChip(node.id)"
+            @edit="setVisibleChip(node.id)"
+          ></chip-preview-component>
         </div>
       </q-scroll-area>
     </q-drawer>
@@ -53,7 +53,7 @@
       <!-- <q-btn
         unelevated
         color="primary"
-        @click="toggleNodesDrawer()"
+        @click="toggleChipsDrawer()"
         id="nodes-drawer-toggle"
       >
         <q-icon name="menu"></q-icon>
@@ -65,74 +65,74 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { Node } from 'src/models/NodeModel';
+import { Chip } from 'src/models/Chip';
 import { uid } from 'quasar';
-import { useNodes } from 'src/store/nodes';
-import NodePreview from 'src/components/nodes/NodePreview.vue';
+import { useChips } from 'src/store/nodes';
+import ChipPreviewComponent from 'src/components/nodes/ChipPreviewComponent.vue';
 
 declare interface BaseComponentData {
   openedTab: string | null;
   nodesDrawerModel: boolean;
-  openedNodesIds: string[];
+  openedChipsIds: string[];
 }
 
 export default defineComponent({
   name: 'MainLayout',
+  components: { ChipPreviewComponent },
   data(): BaseComponentData {
     return {
       openedTab: null,
       nodesDrawerModel: true,
-      openedNodesIds: [],
+      openedChipsIds: [],
     };
   },
   setup() {
-    const nodesStore = useNodes();
+    const nodesStore = useChips();
     const nodes = computed(() => nodesStore.getters.nodes);
     return { nodes, nodesStore };
   },
   methods: {
-    addNewNode(): void {
+    addNewChip(): void {
       const id: string = uid();
-      this.nodesStore.commit('addNode', new Node({ id, name: 'New Node' }));
-      this.openedNodesIds.push(id);
+      this.nodesStore.commit('addChip', new Chip({ id, name: 'New Chip' }));
+      this.openedChipsIds.push(id);
       // If there are only one node, set it as visible node
-      if (this.openedNodesIds.length === 1) {
-        this.setVisibleNode(id);
+      if (this.openedChipsIds.length === 1) {
+        this.setVisibleChip(id);
       }
     },
-    removeNode(id: string): void {
-      const nodeIndex = this.openedNodesIds.findIndex(
+    removeChip(id: string): void {
+      const nodeIndex = this.openedChipsIds.findIndex(
         (nodeId) => nodeId === id
       );
       if (nodeIndex !== -1) {
-        this.openedNodesIds.splice(nodeIndex, 1);
+        this.openedChipsIds.splice(nodeIndex, 1);
       }
       // If there are nodes, set first as visible node,
       // otherwise delete visible node id
-      if (this.openedNodesIds.length > 0) {
-        this.setVisibleNode(this.openedNodesIds[0]);
+      if (this.openedChipsIds.length > 0) {
+        this.setVisibleChip(this.openedChipsIds[0]);
       } else {
-        this.setVisibleNode(null);
+        this.setVisibleChip(null);
       }
     },
-    getNodeById(id: string): Node | undefined {
+    getChipById(id: string): Chip | undefined {
       return this.nodes.find((node) => node.id === id);
     },
-    toggleNodesDrawer(): void {
+    toggleChipsDrawer(): void {
       this.nodesDrawerModel = !this.nodesDrawerModel;
     },
-    setVisibleNode(nodeId: string | null): void {
-      this.nodesStore.commit('setVisualizedNode', nodeId);
+    setVisibleChip(nodeId: string | null): void {
+      this.nodesStore.commit('setVisualizedChip', nodeId);
       this.openedTab = nodeId;
-      if (nodeId && !this.openedNodesIds.find((id) => id === nodeId)) {
-        this.openedNodesIds.push(nodeId);
+      if (nodeId && !this.openedChipsIds.find((id) => id === nodeId)) {
+        this.openedChipsIds.push(nodeId);
       }
     },
-    addSubNode(nodeId: string): void {
-      this.nodesStore.commit('setNodeToAdd', nodeId);
+    addSubChip(nodeId: string): void {
+      this.nodesStore.commit('setChipToAdd', nodeId);
     },
   },
-  components: { NodePreview },
 });
 </script>
 

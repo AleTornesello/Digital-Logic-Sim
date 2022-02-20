@@ -1,13 +1,13 @@
-import { Node } from 'src/models/NodeModel';
+import { Chip } from 'src/models/Chip';
 import { Getters } from 'vuex-smart-module';
-import NodesState from './state';
+import ChipsState from './state';
 
-export default class NodeGetters extends Getters<NodesState> {
-  get nodes(): Node[] {
+export default class ChipGetters extends Getters<ChipsState> {
+  get nodes(): Chip[] {
     return this.state.nodes;
   }
 
-  get visualizedNodeId(): string | null {
-    return this.state.visualizedNodeId;
+  get visualizedChipId(): string | null {
+    return this.state.visualizedChipId;
   }
 }

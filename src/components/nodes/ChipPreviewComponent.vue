@@ -15,14 +15,14 @@
 </template>
 
 <script lang="ts">
-import { Node } from 'src/models/NodeModel';
+import { Chip } from 'src/models/Chip';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'NodePreview',
+  name: 'ChipPreview',
   props: {
     node: {
-      type: Node,
+      type: Chip,
       required: true,
     },
     disabled: {

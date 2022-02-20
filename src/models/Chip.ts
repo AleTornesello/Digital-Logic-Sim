@@ -1,28 +1,28 @@
 import { uid } from 'quasar';
 import { ColorUtils } from 'src/utils/ColorUtils';
-import { PinModel } from './PinModel';
-import SubNodeModel from './SubNodeModel';
+import { Pin } from './Pin';
+import SubChip from './SubChip';
 
-export interface BaseNode {
+export interface BaseChip {
   id?: string;
   name: string;
-  inputs?: PinModel[];
-  outputs?: PinModel[];
+  inputs?: Pin[];
+  outputs?: Pin[];
   function?: (inputs: boolean[]) => boolean[];
   color?: string;
-  subNodes?: SubNodeModel[];
+  subChips?: SubChip[];
 }
 
-export class Node implements BaseNode {
+export class Chip implements BaseChip {
   public id?: string;
   public name: string;
-  public inputs: PinModel[] | undefined;
-  public outputs: PinModel[] | undefined;
+  public inputs: Pin[] | undefined;
+  public outputs: Pin[] | undefined;
   public function: ((inputs: boolean[]) => boolean[]) | undefined;
   public color?: string;
-  public subNodes?: SubNodeModel[];
+  public subChips?: SubChip[];
 
-  constructor(node?: BaseNode) {
+  constructor(node?: BaseChip) {
     this.id =
       node && Object.prototype.hasOwnProperty.call(node, 'id')
         ? node.id
@@ -30,15 +30,15 @@ export class Node implements BaseNode {
     this.name =
       node && Object.prototype.hasOwnProperty.call(node, 'name')
         ? node.name
-        : 'New Node';
+        : 'New Chip';
     this.inputs =
       node && Object.prototype.hasOwnProperty.call(node, 'inputs')
         ? node.inputs
-        : [new PinModel()];
+        : [new Pin()];
     this.outputs =
       node && Object.prototype.hasOwnProperty.call(node, 'outputs')
         ? node.outputs
-        : [new PinModel()];
+        : [new Pin()];
     this.function =
       node && Object.prototype.hasOwnProperty.call(node, 'function')
         ? node.function
@@ -47,9 +47,9 @@ export class Node implements BaseNode {
       node && Object.prototype.hasOwnProperty.call(node, 'color')
         ? node.color
         : ColorUtils.getRandomColor();
-    this.subNodes =
-      node && Object.prototype.hasOwnProperty.call(node, 'subNodes')
-        ? node.subNodes
+    this.subChips =
+      node && Object.prototype.hasOwnProperty.call(node, 'subChips')
+        ? node.subChips
         : [];
   }
 }

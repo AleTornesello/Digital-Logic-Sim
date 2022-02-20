@@ -1,38 +1,39 @@
 <template>
   <q-page class="row items-center justify-center">
     <div id="editor-container">
-      <node-editor
+      <chip-editor-component
+        v-if="!!visualizedChipId"
         ref="editor"
         :nodes="nodes"
-        :node-id="visualizedNodeId"
-      ></node-editor>
+        :node-id="visualizedChipId"
+      ></chip-editor-component>
     </div>
   </q-page>
 </template>
 
 <script lang="ts">
-import NodeEditor from 'src/components/nodes/editor/NodeEditor.vue';
+import ChipEditorComponent from 'src/components/nodes/editor/ChipEditorComponent.vue';
 import { computed, defineComponent, ref } from 'vue';
-import { useNodes } from 'src/store/nodes';
+import { useChips } from 'src/store/nodes';
 import { emitter } from 'src/boot/global-event-bus';
 
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 export default defineComponent({
   name: 'PageIndex',
   components: {
-    NodeEditor,
+    ChipEditorComponent,
   },
   setup() {
-    const nodesStore = useNodes();
+    const nodesStore = useChips();
     const nodes = computed(() => nodesStore.getters.nodes);
-    const visualizedNodeId = computed(
-      () => nodesStore.getters.visualizedNodeId
+    const visualizedChipId = computed(
+      () => nodesStore.getters.visualizedChipId
     );
 
-    const editor = ref(NodeEditor);
+    const editor = ref(ChipEditorComponent);
 
     return {
-      visualizedNodeId,
+      visualizedChipId,
       nodes,
       editor,
     };
@@ -40,7 +41,7 @@ export default defineComponent({
   mounted() {
     emitter.on('sub-node:add', (nodeId: string) => {
       if (this.editor) {
-        this.editor.addSubNode(nodeId);
+        this.editor.addSubChip(nodeId);
       }
     });
   },

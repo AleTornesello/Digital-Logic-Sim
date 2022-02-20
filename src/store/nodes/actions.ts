@@ -1,11 +1,11 @@
 import { Actions } from 'vuex-smart-module';
-import NodeGetters from './getters';
-import NodesMutations from './mutations';
-import NodesState from './state';
+import ChipGetters from './getters';
+import ChipsMutations from './mutations';
+import ChipsState from './state';
 
-export default class NodesActions extends Actions<
-  NodesState,
-  NodeGetters,
-  NodesMutations,
-  NodesActions
+export default class ChipsActions extends Actions<
+  ChipsState,
+  ChipGetters,
+  ChipsMutations,
+  ChipsActions
 > {}

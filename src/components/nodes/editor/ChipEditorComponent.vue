@@ -1,12 +1,12 @@
 <template>
   <div id="node-editor" v-if="nodeId && node">
     <div id="node-editor__inputs">
-      <node-input-pin
+      <chip-input-pin
         v-for="(input, index) in node.inputs"
         :key="index"
-        :state="input.state || false"
+        :state="input.connectedLink?.state || false"
         @toggle="toggleInput(index)"
-      ></node-input-pin>
+      ></chip-input-pin>
       <!-- <q-menu touch-position>
         <q-list dense style="min-width: 100px">
           <q-item clickable v-close-popup @click="newInputPin()">
@@ -16,20 +16,20 @@
       </q-menu> -->
     </div>
     <div id="node-editor__editor">
-      <sub-node
-        v-for="subNode in subNodes"
-        :key="subNode.node.id"
-        :node="subNode.node"
-        :position="subNode.position"
+      <sub-chip-component
+        v-for="subChip in subChips"
+        :key="subChip.node.id"
+        :node="subChip.node"
+        :position="subChip.position"
         class="node-editor__editor__sub-node"
-      ></sub-node>
+      ></sub-chip-component>
     </div>
     <div id="node-editor__outputs">
-      <node-output-pin
+      <chip-output-pin
         v-for="(output, index) in node.outputs"
         :key="index"
-        :state="output.state || false"
-      ></node-output-pin>
+        :state="output.connectedLink?.state || false"
+      ></chip-output-pin>
       <!-- <q-menu touch-position>
         <q-list dense>
           <q-item clickable v-close-popup @click="newOutputPin()">
@@ -42,28 +42,28 @@
 </template>
 
 <script lang="ts">
-import NodeInputPin from '../../pins/InputPin.vue';
-import NodeOutputPin from '../../pins/OutputPin.vue';
+import ChipInputPin from '../../pins/InputPinComponent.vue';
+import ChipOutputPin from '../../pins/OutputPinComponent.vue';
 import { defineComponent, PropType } from 'vue';
-import { Node } from 'src/models/NodeModel';
+import { Chip } from 'src/models/Chip';
 import { extend } from 'quasar';
-import { PinModel } from 'src/models/PinModel';
-import SubNode from './SubNode.vue';
+import { Pin } from 'src/models/Pin';
+import SubChipComponent from './SubChipComponent.vue';
 import interact from 'interactjs';
 import { InteractEvent } from '@interactjs/types';
-import PositionModel from 'src/models/core/PositionModel';
-import SubNodeModel from 'src/models/SubNodeModel';
+import Position from 'src/models/core/Position';
+import SubChip from 'src/models/SubChip';
 
 export default defineComponent({
-  name: 'NodeEditor',
+  name: 'ChipEditor',
   components: {
-    NodeInputPin,
-    NodeOutputPin,
-    SubNode,
+    ChipInputPin,
+    ChipOutputPin,
+    SubChipComponent,
   },
   props: {
     nodes: {
-      type: Array as PropType<Array<Node>>,
+      type: Array as PropType<Array<Chip>>,
       required: true,
     },
     nodeId: {
@@ -72,15 +72,15 @@ export default defineComponent({
     },
   },
   data() {
-    let node: Node | undefined;
+    let node: Chip | undefined;
 
     return {
       node,
     };
   },
   watch: {
-    nodeId(newNodeId: string) {
-      const node = this.nodes.find((node) => node.id === newNodeId);
+    nodeId(newChipId: string) {
+      const node = this.nodes.find((node) => node.id === newChipId);
 
       if (node) {
         this.node = extend(true, {}, node);
@@ -88,12 +88,12 @@ export default defineComponent({
     },
   },
   computed: {
-    subNodes(): { node: Node; position: PositionModel }[] {
-      if (this.node && this.node.subNodes) {
-        return this.node.subNodes.map((subNode) => {
+    subChips(): { node: Chip; position: Position }[] {
+      if (this.node && this.node.subChips) {
+        return this.node.subChips.map((subChip) => {
           return {
-            node: this.getNodeFromId(subNode.id),
-            position: subNode.position,
+            node: this.getChipFromId(subChip.id),
+            position: subChip.position,
           };
         });
       } else {
@@ -126,32 +126,30 @@ export default defineComponent({
   methods: {
     toggleInput(index: number): void {
       if (this.node?.inputs) {
-        this.node.inputs[index].state = !this.node.inputs[index].state;
+        this.node.inputs[index].connectedLink?.toggleState();
       }
     },
     newInputPin(): void {
       if (this.node?.inputs) {
-        this.node.inputs.push(new PinModel());
+        this.node.inputs.push(new Pin());
       }
     },
     newOutputPin(): void {
       if (this.node?.outputs) {
-        this.node.outputs.push(new PinModel());
+        this.node.outputs.push(new Pin());
       }
     },
-    addSubNode(nodeId: string): void {
-      if (this.node?.subNodes) {
-        this.node.subNodes.push(
-          new SubNodeModel(nodeId, new PositionModel(0, 0))
-        );
+    addSubChip(nodeId: string): void {
+      if (this.node?.subChips) {
+        this.node.subChips.push(new SubChip(nodeId, new Position(0, 0)));
       }
     },
-    getNodeFromId(nodeId: string): Node {
+    getChipFromId(nodeId: string): Chip {
       const node = this.nodes.find((node) => node.id === nodeId);
       if (node) {
         return node;
       } else {
-        throw new Error(`Node with id ${nodeId} not found`);
+        throw new Error(`Chip with id ${nodeId} not found`);
       }
     },
     dragMoveListener(event: InteractEvent) {

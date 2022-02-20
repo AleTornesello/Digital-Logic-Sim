@@ -29,19 +29,19 @@
 </template>
 
 <script lang="ts">
-import PositionModel from 'src/models/core/PositionModel';
-import { Node } from 'src/models/NodeModel';
+import Position from 'src/models/core/Position';
+import { Chip } from 'src/models/Chip';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'SubNode',
+  name: 'SubChip',
   props: {
     node: {
-      type: Node,
+      type: Chip,
       required: true,
     },
     position: {
-      type: PositionModel,
+      type: Position,
       required: true,
     },
   },

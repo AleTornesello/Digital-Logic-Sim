@@ -1,22 +1,22 @@
-import { Node } from 'src/models/NodeModel';
+import { Chip } from 'src/models/Chip';
 import { Mutations } from 'vuex-smart-module';
-import NodesState from './state';
+import ChipsState from './state';
 import { emitter } from 'src/boot/global-event-bus';
 
-export default class NodesMutations extends Mutations<NodesState> {
-  addNode(node: Node) {
+export default class ChipsMutations extends Mutations<ChipsState> {
+  addChip(node: Chip) {
     this.state.nodes.push(node);
   }
 
-  removeNode(nodeId: string) {
+  removeChip(nodeId: string) {
     this.state.nodes = this.state.nodes.filter((n) => n.id !== nodeId);
   }
 
-  setVisualizedNode(nodeId: string | null) {
-    this.state.visualizedNodeId = nodeId;
+  setVisualizedChip(nodeId: string | null) {
+    this.state.visualizedChipId = nodeId;
   }
 
-  setNodeToAdd(nodeId: string | null) {
+  setChipToAdd(nodeId: string | null) {
     emitter.emit('sub-node:add', nodeId as string);
   }
 }

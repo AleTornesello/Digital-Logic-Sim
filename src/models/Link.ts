@@ -5,7 +5,7 @@ export interface BaseLink {
   state?: boolean;
 }
 
-export class LinkModel implements BaseLink {
+export class Link implements BaseLink {
   public id?: string;
   public state?: boolean;
 
@@ -16,5 +16,9 @@ export class LinkModel implements BaseLink {
       pin && Object.prototype.hasOwnProperty.call(pin, 'state')
         ? pin.state
         : false;
+  }
+
+  public toggleState() {
+    this.state = !this.state;
   }
 }

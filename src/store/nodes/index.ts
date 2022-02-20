@@ -1,22 +1,22 @@
 import { createComposable, Module } from 'vuex-smart-module';
-import NodesState from './state';
-import NodeGetters from './getters';
-import NodesMutations from './mutations';
-import NodesActions from './actions';
+import ChipsState from './state';
+import ChipGetters from './getters';
+import ChipsMutations from './mutations';
+import ChipsActions from './actions';
 
 const nodesModule = new Module<
-  NodesState,
-  NodeGetters,
-  NodesMutations,
-  NodesActions
+  ChipsState,
+  ChipGetters,
+  ChipsMutations,
+  ChipsActions
 >({
   namespaced: true,
-  actions: NodesActions,
-  getters: NodeGetters,
-  mutations: NodesMutations,
-  state: NodesState,
+  actions: ChipsActions,
+  getters: ChipGetters,
+  mutations: ChipsMutations,
+  state: ChipsState,
 });
 
 export default nodesModule;
 
-export const useNodes = createComposable(nodesModule);
+export const useChips = createComposable(nodesModule);

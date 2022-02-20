@@ -1,14 +1,14 @@
 import { uid } from 'quasar';
-import { LinkModel } from './LinkModel';
+import { Link } from './Link';
 
 export interface BasePin {
   id?: string;
-  connectedLink?: LinkModel;
+  connectedLink?: Link;
 }
 
-export class PinModel implements BasePin {
+export class Pin implements BasePin {
   public id?: string;
-  public connectedLink?: LinkModel;
+  public connectedLink?: Link;
 
   constructor(pin?: BasePin) {
     this.id =

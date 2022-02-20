@@ -1,14 +1,14 @@
-import { Node } from 'src/models/NodeModel';
+import { Chip } from 'src/models/Chip';
 
-export default class NodesState {
-  public nodes: Node[] = [
-    new Node({
+export default class ChipsState {
+  public nodes: Chip[] = [
+    new Chip({
       name: 'NOT',
       function: (inputs: boolean[]): boolean[] => {
         return [!inputs[0]];
       },
     }),
-    new Node({
+    new Chip({
       inputs: new Array(2).fill(false),
       name: 'AND',
       function: (inputs: boolean[]): boolean[] => {
@@ -16,5 +16,5 @@ export default class NodesState {
       },
     }),
   ];
-  public visualizedNodeId: string | null = null;
+  public visualizedChipId: string | null = null;
 }
