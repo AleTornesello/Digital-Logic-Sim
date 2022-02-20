@@ -1,21 +1,30 @@
 import { uid } from 'quasar';
+import { Pin } from './Pin';
 
 export interface BaseLink {
   id?: string;
   state?: boolean;
+  fromPin: Pin;
+  toPin: Pin;
 }
 
-export class Link implements BaseLink {
-  public id?: string;
-  public state?: boolean;
+export class Link {
+  public id: string;
+  public state: boolean;
+  public fromPin: Pin;
+  public toPin: Pin;
 
-  constructor(pin?: BaseLink) {
+  constructor(link: BaseLink) {
     this.id =
-      pin && Object.prototype.hasOwnProperty.call(pin, 'id') ? pin.id : uid();
+      link && Object.prototype.hasOwnProperty.call(link, 'id')
+        ? link.id || uid()
+        : uid();
     this.state =
-      pin && Object.prototype.hasOwnProperty.call(pin, 'state')
-        ? pin.state
+      link && Object.prototype.hasOwnProperty.call(link, 'state')
+        ? link.state || false
         : false;
+    this.fromPin = link.fromPin;
+    this.toPin = link.toPin;
   }
 
   public toggleState() {
