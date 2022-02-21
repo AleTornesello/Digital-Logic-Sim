@@ -1,6 +1,7 @@
 import { uid } from 'quasar';
 import { ColorUtils } from 'src/utils/ColorUtils';
-import { Pin } from '../Pin';
+import { Link } from '../Link';
+import { Pin, PinType } from '../Pin';
 import SubChip from '../SubChip';
 
 export interface BaseChip {
@@ -11,6 +12,7 @@ export interface BaseChip {
   function?: (inputs: boolean[]) => boolean[];
   color?: string;
   subChips?: SubChip[];
+  links?: Link[];
 }
 
 export class Chip {
@@ -20,6 +22,7 @@ export class Chip {
   public outputs: Pin[];
   public color: string;
   public subChips: SubChip[];
+  public links: Link[];
 
   constructor(node?: BaseChip) {
     this.id =
@@ -36,8 +39,8 @@ export class Chip {
         : [new Pin()];
     this.outputs =
       node && Object.prototype.hasOwnProperty.call(node, 'outputs')
-        ? node.outputs || [new Pin()]
-        : [new Pin()];
+        ? node.outputs || [new Pin({ type: PinType.OUTPUT })]
+        : [new Pin({ type: PinType.OUTPUT })];
     this.color =
       node && Object.prototype.hasOwnProperty.call(node, 'color')
         ? node.color || ColorUtils.getRandomColor()
@@ -45,6 +48,10 @@ export class Chip {
     this.subChips =
       node && Object.prototype.hasOwnProperty.call(node, 'subChips')
         ? node.subChips || []
+        : [];
+    this.links =
+      node && Object.prototype.hasOwnProperty.call(node, 'sulinksbChips')
+        ? node.links || []
         : [];
   }
 }

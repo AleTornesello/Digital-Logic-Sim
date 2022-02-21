@@ -11,7 +11,8 @@
         class="sub-node__inputs__anchor"
         v-for="input in node.inputs"
         :key="input.id"
-        :class="{ active: input.connectedLink?.state || false }"
+        :class="{ active: input.connectedLinks[0]?.state || false }"
+        @click="onInputAnchorClick(input)"
       ></div>
     </div>
     <div class="sub-node__name">
@@ -22,7 +23,7 @@
         class="sub-node__outputs__anchor"
         v-for="output in node.outputs"
         :key="output.id"
-        :class="{ active: output.connectedLink?.state || false }"
+        :class="{ active: output.connectedLinks[0]?.state || false }"
       ></div>
     </div>
   </div>
@@ -31,6 +32,7 @@
 <script lang="ts">
 import { Chip } from 'src/models/chips/Chip';
 import { Position } from 'src/models/core/Position';
+import { Pin } from 'src/models/Pin';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -43,6 +45,11 @@ export default defineComponent({
     position: {
       type: Position,
       required: true,
+    },
+  },
+  methods: {
+    onInputAnchorClick(input: Pin) {
+      this.$emit('anchor:input', input);
     },
   },
 });
@@ -74,6 +81,10 @@ export default defineComponent({
       background-color: #202020;
       border-radius: 50%;
       border: 1px solid #101010;
+
+      &.active {
+        background-color: #cc0000;
+      }
     }
   }
 

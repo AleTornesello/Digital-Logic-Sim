@@ -7,9 +7,13 @@ export class NotChip extends BuiltinChip {
   }
 
   public process(): void {
-    if (this.outputs[0].connectedLink && this.inputs[0].connectedLink) {
-      this.outputs[0].connectedLink.state =
-        !this.inputs[0].connectedLink?.state;
+    if (
+      this.outputs[0].connectedLinks.length > 0 &&
+      this.inputs[0].connectedLinks.length > 0
+    ) {
+      this.outputs[0].connectedLinks.forEach((link) => {
+        link.state = !this.inputs[0].connectedLinks[0].state;
+      });
     }
   }
 }

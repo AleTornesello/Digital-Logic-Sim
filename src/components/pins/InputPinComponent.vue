@@ -2,7 +2,11 @@
   <div>
     <div class="input" :class="{ active: state }" @click="toggleState()"></div>
     <div class="input__line"></div>
-    <div class="input__anchor" :class="{ active: state }"></div>
+    <div
+      class="input__anchor"
+      :class="{ active: state }"
+      @click="onAnchorClick()"
+    ></div>
   </div>
 </template>
 
@@ -20,6 +24,9 @@ export default defineComponent({
   methods: {
     toggleState() {
       this.$emit('toggle');
+    },
+    onAnchorClick() {
+      this.$emit('anchor');
     },
   },
 });

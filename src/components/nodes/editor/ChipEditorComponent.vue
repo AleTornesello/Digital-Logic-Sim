@@ -4,8 +4,9 @@
       <chip-input-pin
         v-for="(input, index) in node.inputs"
         :key="index"
-        :state="input.connectedLink?.state || false"
+        :state="input.connectedLinks[0]?.state || false"
         @toggle="toggleInput(index)"
+        @anchor="onInputAnchorClick(index)"
       ></chip-input-pin>
       <!-- <q-menu touch-position>
         <q-list dense style="min-width: 100px">
@@ -22,13 +23,14 @@
         :node="subChip.node"
         :position="subChip.position"
         class="node-editor__editor__sub-node"
+        @anchor:input="onChipInputAnchorClick($event)"
       ></sub-chip-component>
     </div>
     <div id="node-editor__outputs">
       <chip-output-pin
         v-for="(output, index) in node.outputs"
         :key="index"
-        :state="output.connectedLink?.state || false"
+        :state="output.connectedLinks[0]?.state || false"
       ></chip-output-pin>
       <!-- <q-menu touch-position>
         <q-list dense>
@@ -47,12 +49,13 @@ import ChipOutputPin from '../../pins/OutputPinComponent.vue';
 import { defineComponent, PropType } from 'vue';
 import { Chip } from 'src/models/chips/Chip';
 import { extend } from 'quasar';
-import { Pin } from 'src/models/Pin';
+import { Pin, PinType } from 'src/models/Pin';
 import SubChipComponent from './SubChipComponent.vue';
 import interact from 'interactjs';
 import { InteractEvent } from '@interactjs/types';
 import SubChip from 'src/models/SubChip';
 import { Position } from 'src/models/core/Position';
+import { Link } from 'src/models/Link';
 
 export default defineComponent({
   name: 'ChipEditor',
@@ -73,18 +76,27 @@ export default defineComponent({
   },
   data() {
     let node: Chip | undefined;
+    let newLink: {
+      fromPin: Pin | undefined;
+      toPin: Pin | undefined;
+    } = {
+      fromPin: undefined,
+      toPin: undefined,
+    };
+    let chips: Chip[] = [];
 
     return {
       node,
+      newLink,
+      chips,
     };
   },
   watch: {
     nodeId(newChipId: string) {
-      const node = this.nodes.find((node) => node.id === newChipId);
-
-      if (node) {
-        this.node = extend(true, {}, node);
-      }
+      this.node = this.chips.find((node) => node.id === newChipId);
+    },
+    nodes(newNodes: Chip[]) {
+      this.chips = extend(true, [], newNodes);
     },
   },
   computed: {
@@ -125,47 +137,109 @@ export default defineComponent({
   },
   methods: {
     toggleInput(index: number): void {
-      if (this.node?.inputs) {
-        this.node.inputs[index].connectedLink?.toggleState();
+      if (this.node) {
+        this.node.inputs[index].connectedLinks.forEach((link) => {
+          link.toggleState();
+        });
       }
     },
     newInputPin(): void {
-      if (this.node?.inputs) {
+      if (this.node) {
         this.node.inputs.push(new Pin());
       }
     },
     newOutputPin(): void {
-      if (this.node?.outputs) {
-        this.node.outputs.push(new Pin());
+      if (this.node) {
+        this.node.outputs.push(new Pin({ type: PinType.OUTPUT }));
       }
     },
-    addSubChip(nodeId: string): void {
+    addSubChip(chipId: string): void {
       if (this.node?.subChips) {
-        this.node.subChips.push(new SubChip(nodeId, new Position(0, 0)));
+        this.node.subChips.push(new SubChip(chipId, new Position(0, 0)));
       }
     },
-    getChipFromId(nodeId: string): Chip {
-      const node = this.nodes.find((node) => node.id === nodeId);
-      if (node) {
-        return node;
+    getChipFromId(chipId: string): Chip {
+      const chip = this.chips.find((node) => node.id === chipId);
+      if (chip) {
+        return chip;
       } else {
-        throw new Error(`Chip with id ${nodeId} not found`);
+        throw new Error(`Chip with id ${chipId} not found`);
       }
     },
     dragMoveListener(event: InteractEvent) {
       let target = event.target;
-      // // keep the dragged position in the data-x/data-y attributes
+      // keep the dragged position in the data-x/data-y attributes
       const x: number =
         (parseFloat(target.getAttribute('data-x') || '0') || 0) + event.dx;
       const y: number =
         (parseFloat(target.getAttribute('data-y') || '0') || 0) + event.dy;
 
-      // // translate the element
+      // translate the element
       target.style.transform = `translate(${x}px, ${y}px)`;
 
-      // // update the posiion attributes
+      // update the posiion attributes
       target.setAttribute('data-x', x.toString(10));
       target.setAttribute('data-y', y.toString(10));
+    },
+    onInputAnchorClick(index: number): void {
+      if (this.node) {
+        // Check if exist already a start pin
+        if (this.newLink.fromPin) {
+          // Check if is not selected the same pin
+          if (this.newLink.fromPin.id !== this.node.inputs[index].id) {
+            this.newLink.toPin = this.node.inputs[index];
+            this.addNewLinkToChip();
+          } else {
+            this.newLink.fromPin = undefined;
+          }
+        } else {
+          this.newLink.fromPin = this.node.inputs[index];
+        }
+      }
+    },
+    onChipInputAnchorClick(pin: Pin): void {
+      if (this.node) {
+        // Check if exist already a start pin
+        if (this.newLink.fromPin) {
+          // Check if is not selected the same pin
+          if (this.newLink.fromPin.id !== pin.id) {
+            this.newLink.toPin = pin;
+            this.addNewLinkToChip();
+          } else {
+            this.newLink.fromPin = undefined;
+          }
+        } else {
+          this.newLink.fromPin = pin;
+        }
+      }
+    },
+    addNewLinkToChip() {
+      if (this.node && this.newLink.fromPin && this.newLink.toPin) {
+        const newLinkIndex: number = this.node.links.push(new Link());
+
+        if (this.newLink.fromPin.type === PinType.INPUT) {
+          this.newLink.fromPin.connectedLinks.push(
+            this.node.links[newLinkIndex - 1]
+          );
+        } else {
+          this.newLink.fromPin.connectedLinks[0] =
+            this.node.links[newLinkIndex - 1];
+        }
+
+        if (this.newLink.toPin.type === PinType.INPUT) {
+          this.newLink.toPin.connectedLinks.push(
+            this.node.links[newLinkIndex - 1]
+          );
+        } else {
+          this.newLink.toPin.connectedLinks[0] =
+            this.node.links[newLinkIndex - 1];
+        }
+
+        this.newLink = {
+          fromPin: undefined,
+          toPin: undefined,
+        };
+      }
     },
   },
 });

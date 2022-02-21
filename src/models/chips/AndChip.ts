@@ -11,13 +11,15 @@ export class AndChip extends BuiltinChip {
 
   public process(): void {
     if (
-      this.outputs[0].connectedLink &&
-      this.inputs[0].connectedLink &&
-      this.inputs[1].connectedLink
+      this.outputs[0].connectedLinks.length > 0 &&
+      this.inputs[0].connectedLinks.length > 0 &&
+      this.inputs[1].connectedLinks.length > 0
     ) {
-      this.outputs[0].connectedLink.state =
-        this.inputs[0].connectedLink?.state &&
-        this.inputs[1].connectedLink?.state;
+      this.outputs[0].connectedLinks.forEach((link) => {
+        link.state =
+          this.inputs[0].connectedLinks[0].state &&
+          this.inputs[1].connectedLinks[0].state;
+      });
     }
   }
 }
