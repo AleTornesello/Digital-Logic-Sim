@@ -12,6 +12,13 @@ export default class ChipsMutations extends Mutations<ChipsState> {
     this.state.nodes = this.state.nodes.filter((n) => n.id !== nodeId);
   }
 
+  updateChip(chip: Chip) {
+    const oldChip = this.state.nodes.find((n) => n.id === chip.id);
+    if (oldChip) {
+      Object.assign(oldChip, chip);
+    }
+  }
+
   setVisualizedChip(nodeId: string | null) {
     this.state.visualizedChipId = nodeId;
   }

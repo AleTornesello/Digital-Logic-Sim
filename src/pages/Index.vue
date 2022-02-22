@@ -6,6 +6,7 @@
         ref="editor"
         :nodes="nodes"
         :node-id="visualizedChipId"
+        @update:chip="onUpdateChip($event)"
       ></chip-editor-component>
     </div>
   </q-page>
@@ -16,6 +17,7 @@ import ChipEditorComponent from 'src/components/nodes/editor/ChipEditorComponent
 import { computed, defineComponent, ref } from 'vue';
 import { useChips } from 'src/store/nodes';
 import { emitter } from 'src/boot/global-event-bus';
+import { Chip } from 'src/models/chips/Chip';
 
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 export default defineComponent({
@@ -33,6 +35,7 @@ export default defineComponent({
     const editor = ref(ChipEditorComponent);
 
     return {
+      nodesStore,
       visualizedChipId,
       nodes,
       editor,
@@ -47,6 +50,11 @@ export default defineComponent({
   },
   beforeUnmount() {
     emitter.off('sub-node:add');
+  },
+  methods: {
+    onUpdateChip(chip: Chip) {
+      this.nodesStore.commit('updateChip', chip);
+    },
   },
 });
 </script>

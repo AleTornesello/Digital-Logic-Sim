@@ -47,6 +47,9 @@ export default defineComponent({
       required: true,
     },
   },
+  mounted() {
+    (this.$el as HTMLElement).setAttribute('id', this.node.id);
+  },
   methods: {
     onInputAnchorClick(input: Pin) {
       this.$emit('anchor:input', input);

@@ -95,8 +95,18 @@ export default defineComponent({
     nodeId(newChipId: string) {
       this.node = this.chips.find((node) => node.id === newChipId);
     },
-    nodes(newNodes: Chip[]) {
-      this.chips = extend(true, [], newNodes);
+    nodes: {
+      handler(newNodes: Chip[]) {
+        this.chips = extend(true, [], newNodes);
+      },
+      immediate: true,
+      deep: true,
+    },
+    node: {
+      handler(newChip: Chip) {
+        this.$emit('update:chip', newChip);
+      },
+      deep: true,
     },
   },
   computed: {
@@ -168,18 +178,25 @@ export default defineComponent({
     },
     dragMoveListener(event: InteractEvent) {
       let target = event.target;
-      // keep the dragged position in the data-x/data-y attributes
+
+      // Keep the dragged position in the data-x/data-y attributes
       const x: number =
         (parseFloat(target.getAttribute('data-x') || '0') || 0) + event.dx;
       const y: number =
         (parseFloat(target.getAttribute('data-y') || '0') || 0) + event.dy;
 
-      // translate the element
+      // Translate the element
       target.style.transform = `translate(${x}px, ${y}px)`;
 
-      // update the posiion attributes
+      // Update the posiion attributes
       target.setAttribute('data-x', x.toString(10));
       target.setAttribute('data-y', y.toString(10));
+
+      // Update the subChip position
+      const id = target.getAttribute('id');
+      if (id) {
+        this.updateSubChipPosition(id, x, y);
+      }
     },
     onInputAnchorClick(index: number): void {
       if (this.node) {
@@ -239,6 +256,16 @@ export default defineComponent({
           fromPin: undefined,
           toPin: undefined,
         };
+      }
+    },
+    updateSubChipPosition(subChipId: string, x: number, y: number) {
+      if (this.node) {
+        const subChip = this.node.subChips.find(
+          (subChip) => subChip.id === subChipId
+        );
+        if (subChip) {
+          subChip.position = new Position(x, y);
+        }
       }
     },
   },
